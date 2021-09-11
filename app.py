@@ -7,6 +7,8 @@ import zipfile
 import io
 import pathlib
 
+import facedetect
+
 app = Flask(__name__)
 dropzone = Dropzone(app)
 
@@ -39,9 +41,11 @@ def index():
 def download():
     base_path = pathlib.Path('inputs')
     data = io.BytesIO()
+
     with zipfile.ZipFile(data, mode='w') as zip_output:
-        for file_name in base_path.iterdir():
-            zip_output.write(file_name)
+        for file_path in base_path.iterdir():
+            facedetect.find_eyes(str(file_path))
+            zip_output.write(file_path)
     data.seek(0)
 
     return send_file(
