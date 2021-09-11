@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
 #save the image(i) in the same directory
@@ -18,6 +18,7 @@ for (x,y,w,h) in faces:
             im = Image.open('family.jpg')
             print(ex,ey,ew+ex,ey+eh)
             im = im.crop((ex+x,ey+y,ex+ew+x, ey+eh+y))
+            im = ImageOps.grayscale(im)
             im = im.resize((80,80))
             im.save('croppedeyes'+str(count) +  ".jpg")
             count += 1
