@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flask App</title>
+  {{ dropzone.load_css() }}
+  {{ dropzone.style('border: 2px dashed #0087F7; margin: 2rem; height: 400px;') }}
+</head>
+<body>
+  <h1>Hello, world!</h1>
+  {{ dropzone.create(action='index') }}
+  {{ dropzone.config() }}
+  {{ dropzone.load_js() }}
+  <a href="/download">Download</a>
+</body>
+</html>
