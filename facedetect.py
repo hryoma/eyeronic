@@ -14,15 +14,13 @@ for (x,y,w,h) in faces:
 	roi_color = img[y:y+h, x:x+w]
 	eyes = eye_cascade.detectMultiScale(roi_gray)
 	for (ex,ey,ew,eh) in eyes:
-		cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
-		im = Image.open('family.jpg')
-		im = im.crop((ex,ey,ex+ew, ex+eh))
-		im = im.resize((80,80))
-		im.save('croppedeyes'+str(count), ".jpg")
-		count += 1
-    # print count every 200 photos to monitor progress
-		if count % 200 == 0:
-			print(count)
+            cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+            im = Image.open('family.jpg')
+            print(ex,ey,ew+ex,ey+eh)
+            im = im.crop((ex+x,ey+y,ex+ew+x, ey+eh+y))
+            im = im.resize((80,80))
+            im.save('croppedeyes'+str(count) +  ".jpg")
+            count += 1
 cv2.imshow('img',img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
