@@ -3,14 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Flask App</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+        crossorigin="anonymous">
   {{ dropzone.load_css() }}
-  {{ dropzone.style('border: 2px dashed #0087F7; margin: 2rem; height: 400px;') }}
+  {{ dropzone.style("border: 2px dashed #0087F7; border-radius: 10px; margin: 2rem; height: 400px") }}
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  {{ dropzone.create(action='index') }}
-  {{ dropzone.config() }}
-  {{ dropzone.load_js() }}
-  <a href="/download">Download</a>
+  <div class="container text-center">
+    <img src="static/logo.png" style="width: 600px; max-width: 100%;">
+    {{ dropzone.create(action='index') }}
+    {{ dropzone.config() }}
+    {{ dropzone.load_js() }}
+    <a href="/download" class="btn-lg btn-primary" role="button">Download</a>
+  </div>
 </body>
 </html>
