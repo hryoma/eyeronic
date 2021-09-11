@@ -8,6 +8,10 @@ import io
 import pathlib
 
 import facedetect
+import tflearn
+import numpy as np
+from PIL import Image
+from skimage import transform
 
 app = Flask(__name__)
 dropzone = Dropzone(app)
@@ -39,14 +43,32 @@ def index():
 
 @app.route('/download')
 def download():
-    base_path = pathlib.Path('inputs')
+    inputs_path = pathlib.Path('inputs')
     data = io.BytesIO()
 
     with zipfile.ZipFile(data, mode='w') as zip_output:
-        for file_path in base_path.iterdir():
+        for file_path in inputs_path.iterdir():
             facedetect.find_eyes(str(file_path))
             zip_output.write(file_path)
     data.seek(0)
+
+    convnet = tflearn.input_data(shape=[None, 50, 50, 1], name='input')
+    model = tflearn.DNN(convnet)
+    model.load('EyeDet.h5')
+
+    eyes_path = pathlib.Path('eyes')
+    for file_path in eyes_path.iterdir():
+        print(str(file_path))
+
+        def load(filename):
+            np_image = Image.open(filename)
+            np_image = np.array(np_image).astype('float32') / 255
+            np_image = transform.resize(np_image, (50, 50, 1))
+            np_image = np.expand_dims(np_image, axis=0)
+            return np_image
+
+        image = load(str(file_path))
+        print(model.predict(image))
 
     return send_file(
         data,
