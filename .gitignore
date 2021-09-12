@@ -1,5 +1,6 @@
 .idea/
 *.iml
 
+__pycache__/*
 inputs/
 eyes/
