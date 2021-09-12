@@ -7,9 +7,9 @@ eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
 
 
 def find_eyes(filepath):
-    file_name = filepath.split('/')[1]
+    image_name = filepath.split('/')[1]
     # todo: i think there's error here, when the directory is already made
-    os.mkdir('eyes/' + file_name + '/')
+    os.mkdir('eyes/' + image_name + '/')
 
     img = cv2.imread(filepath)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -28,6 +28,6 @@ def find_eyes(filepath):
             img_eye = img_eye.crop((ex + x, ey + y, ex + ew + x, ey + eh + y))
             img_eye = ImageOps.grayscale(img_eye)
             img_eye = img_eye.resize((80, 80))
-            img_eye.save('eyes/' + file_name + '/eye-' + str(eye_count) + ".jpg")
+            img_eye.save('eyes/' + image_name + '/eye-' + str(eye_count) + ".jpg")
             eye_count += 1
 

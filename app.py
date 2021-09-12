@@ -6,6 +6,7 @@ import os
 import zipfile
 import io
 import pathlib
+import shutil
 
 import facedetect
 import tensorflow as tf
@@ -28,7 +29,7 @@ app.config['DROPZONE_REDIRECT_VIEW'] = 'download'
 
 # Uploads settings
 photos = UploadSet("photos", IMAGES)
-app.config["UPLOADED_PHOTOS_DEST"] = "inputs"
+app.config["UPLOADED_PHOTOS_DEST"] = "album"
 app.config["SECRET_KEY"] = os.urandom(24)
 configure_uploads(app, photos)
 
@@ -47,8 +48,13 @@ def index():
 
 @app.route('/download')
 def download():
-    inputs_path = pathlib.Path('inputs')
+    album_path = pathlib.Path('album')
+
+    # set up eyes directory
     eyes_path = pathlib.Path('eyes')
+    if not (os.path.exists('eyes') and os.path.isdir('eyes')):
+        os.mkdir('eyes')
+
     data = io.BytesIO()
 
     # set up DNN
@@ -81,14 +87,13 @@ def download():
     model.load('EyeDet.h5')
 
     # process each input image
-    for ind, filepath in enumerate(inputs_path.iterdir()):
+    for ind, filepath in enumerate(album_path.iterdir()):
         facedetect.find_eyes(str(filepath))
 
     for image_dir in eyes_path.iterdir():
         keep_img = False
-        print(str(image_dir))
+        print('img dir: ', str(image_dir))
 
-        # todo: not sure if this part works yet
         # process each eye for the input image
         for eyes_path in image_dir.iterdir():
             eyes_img = Image.open(str(eyes_path))
@@ -105,16 +110,19 @@ def download():
                 keep_img = True
                 break
 
-        # remove the image with only open eyes from the inputs
+        # remove the image with only open eyes from the album
         if not keep_img:
-            os.remove('inputs/' + str(image_dir))  # todo: figure out the right path
+            image_name = str(image_dir).split('/')[1]
+            os.remove('album/' + image_name)  # todo: figure out the right path
 
     with zipfile.ZipFile(data, mode='w') as zip_output:
-        for file_path in inputs_path.iterdir():
+        for file_path in album_path.iterdir():
             zip_output.write(file_path)
+    data.seek(0)
 
-    # clean up - delete all inputs, eyes, and outputs
-    # todo
+    # clean up - delete all images
+    shutil.rmtree('album')
+    shutil.rmtree('eyes')
 
     return send_file(
         data,
