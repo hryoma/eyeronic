@@ -57,7 +57,7 @@ def download():
 
     data = io.BytesIO()
 
-    # set up DNN
+    # set up DNN - credits to https://www.kaggle.com/shehzadhanif/cnn-training-for-eye-detector
     tf.compat.v1.reset_default_graph()
     convnet = tflearn.input_data(shape=[None, 50, 50, 1], name='input')
 
