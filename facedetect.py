@@ -1,11 +1,16 @@
 import cv2
 from PIL import Image, ImageOps
+import os
 
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
 
 
 def find_eyes(filepath):
+    image_name = filepath.split('/')[1]
+    # todo: i think there's error here, when the directory is already made
+    os.mkdir('eyes/' + image_name + '/')
+
     img = cv2.imread(filepath)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
@@ -23,6 +28,6 @@ def find_eyes(filepath):
             img_eye = img_eye.crop((ex + x, ey + y, ex + ew + x, ey + eh + y))
             img_eye = ImageOps.grayscale(img_eye)
             img_eye = img_eye.resize((80, 80))
-            img_eye.save('eyes/cropped-eyes-' + str(eye_count) + ".jpg")
+            img_eye.save('eyes/' + image_name + '/eye-' + str(eye_count) + ".jpg")
             eye_count += 1
 
