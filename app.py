@@ -128,5 +128,5 @@ def download():
         data,
         mimetype='application/zip',
         as_attachment=True,
-        attachment_filename='album.zip'
+        download_name='album.zip'
     )
